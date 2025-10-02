@@ -1,0 +1,27 @@
+{
+  "name": "@jaspermayone/slack-profile-cli",
+  "version": "1.0.0",
+  "description": "CLI tool for updating Slack user profiles",
+  "main": "index.js",
+  "bin": {
+    "slack-profile": "./index.js"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "slack",
+    "profile",
+    "cli",
+    "admin"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "commander": "^11.0.0",
+    "dotenv": "^16.3.0",
+    "inquirer": "^8.2.6",
+    "inquirer-autocomplete-prompt": "^2.0.0"
+  }
+}
