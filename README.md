@@ -2,15 +2,49 @@
 
 A command-line tool for updating Slack user profiles using the Slack API. Perfect for workspace admins who need to manage user profiles programmatically.
 
+**Available in both Node.js and Ruby!**
+
+## Installation
+
+### Via npm (Node.js)
+
+```bash
+npm install -g @jaspermayone/slack-profile-cli
+```
+
+### Via RubyGems (Ruby)
+
+```bash
+gem install slack_profile
+```
+
+### Via Homebrew (builds from Ruby source)
+
+```bash
+brew install slack-profile
+```
+
+### From Source
+
+**Node.js version:**
+```bash
+git clone https://github.com/jaspermayone/slack-profile-cli.git
+cd slack-profile-cli/nodejs
+npm install
+npm link
+```
+
+**Ruby version:**
+```bash
+git clone https://github.com/jaspermayone/slack-profile-cli.git
+cd slack-profile-cli/ruby
+bundle install
+rake install
+```
+
 ## Setup
 
-1. **Install dependencies:**
-
-   ```bash
-   npm install
-   ```
-
-2. **Get your Slack token:**
+1. **Get your Slack token:**
 
    - Go to [https://api.slack.com/apps](https://api.slack.com/apps)
    - Create a new app or select an existing one
@@ -19,34 +53,45 @@ A command-line tool for updating Slack user profiles using the Slack API. Perfec
    - Install the app to your workspace
    - Copy the "User OAuth Token" (starts with `xoxp-`)
 
-3. **Set up environment:**
+2. **Configure your token (choose one method):**
 
+   **Option 1: Environment variable (recommended for regular use)**
+   ```bash
+   # Add to your ~/.bashrc, ~/.zshrc, or ~/.profile
+   export SLACK_TOKEN=xoxp-your-token-here
+   ```
+
+   **Option 2: .env file (for local development)**
    ```bash
    cp .env.example .env
    # Edit .env and add your token
    ```
 
-   Or export directly:
-
+   **Option 3: Command line flag (for one-off commands)**
    ```bash
-   export SLACK_TOKEN=xoxp-your-token-here
+   slack-profile --token xoxp-your-token-here <command>
    ```
 
-4. **Make executable (optional):**
+## Which Version Should I Use?
 
-   ```bash
-   chmod +x index.js
-   npm link  # For global installation
-   ```
+- **Node.js**: Best if you're already in a Node.js environment or prefer npm
+- **Ruby**: Best if you're using Homebrew or prefer Ruby gems
+- Both versions have identical features and CLI interfaces
 
 ## Usage
+
+Both versions use the same commands:
 
 ### Interactive Mode (Recommended)
 
 Simply run the tool without arguments for a guided experience:
 
 ```bash
-node index.js
+slack-profile
+# or
+slack-profile interactive
+# or with token flag
+slack-profile --token xoxp-xxx interactive
 ```
 
 This will prompt you to:
@@ -61,56 +106,59 @@ This will prompt you to:
 #### Set a single field for one user
 
 ```bash
-node index.js set-field -u U1234567890 -n first_name -v "John"
-node index.js set-field -u U1234567890 -n title -v "Senior Developer"
-node index.js set-field -u U1234567890 -n Xf07986PJV2R -v "U079DHX7FB6"  # Custom field
+slack-profile set-field -u U1234567890 -n first_name -v "John"
+slack-profile set-field -u U1234567890 -n title -v "Senior Developer"
+slack-profile set-field -u U1234567890 -n Xf07986PJV2R -v "U079DHX7FB6"  # Custom field
+
+# With token flag
+slack-profile --token xoxp-xxx set-field -u U1234567890 -n title -v "Engineer"
 ```
 
 #### Set a single field for multiple users
 
 ```bash
-node index.js batch-field -u U1234567890,U0987654321,U1111222233 -n title -v "Developer"
-node index.js batch-field -u U1234567890,U0987654321 -n Xf07986PJV2R -v "U079DHX7FB6"
+slack-profile batch-field -u U1234567890,U0987654321,U1111222233 -n title -v "Developer"
+slack-profile batch-field -u U1234567890,U0987654321 -n Xf07986PJV2R -v "U079DHX7FB6"
 ```
 
 #### Set multiple fields for one user
 
 ```bash
-node index.js set-profile -u U1234567890 -p '{"first_name":"John","last_name":"Doe","title":"Developer"}'
+slack-profile set-profile -u U1234567890 -p '{"first_name":"John","last_name":"Doe","title":"Developer"}'
 ```
 
 #### Set multiple fields for multiple users
 
 ```bash
-node index.js batch-profile -u U1234567890,U0987654321 -p '{"title":"Senior Developer","pronouns":"they/them"}'
+slack-profile batch-profile -u U1234567890,U0987654321 -p '{"title":"Senior Developer","pronouns":"they/them"}'
 ```
 
 #### Clear field values
 
 ```bash
-node index.js set-field -u U1234567890 -n title -v ""  # Clear title
+slack-profile set-field -u U1234567890 -n title -v ""  # Clear title
 ```
 
 #### Set custom fields
 
 ```bash
 # First, get custom field IDs
-node index.js list-fields
+slack-profile list-fields
 
 # Then set custom field values
-node index.js set-profile -u U1234567890 -p '{"fields":{"Xf0111111":{"value":"Barista","alt":""}}}'
+slack-profile set-profile -u U1234567890 -p '{"fields":{"Xf0111111":{"value":"Barista","alt":""}}}'
 ```
 
 #### List available fields
 
 ```bash
-node index.js list-fields
+slack-profile list-fields
 ```
 
 #### Show examples
 
 ```bash
-node index.js examples
+slack-profile examples
 ```
 
 ## Available Standard Fields

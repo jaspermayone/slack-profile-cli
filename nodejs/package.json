@@ -1,6 +1,6 @@
 {
   "name": "@jaspermayone/slack-profile-cli",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "CLI tool for updating Slack user profiles",
   "main": "index.js",
   "bin": {

@@ -183,11 +183,14 @@ class SlackProfileCLI {
   }
 }
 
-function getSlackClient() {
-  const token = process.env.SLACK_TOKEN;
+function getSlackClient(providedToken = null) {
+  const token = providedToken || process.env.SLACK_TOKEN;
   if (!token) {
-    console.error('Error: SLACK_TOKEN environment variable is required');
-    console.error('Set it with: export SLACK_TOKEN=xoxp-your-token-here');
+    console.error('Error: Slack token is required');
+    console.error('Provide it via:');
+    console.error('  1. Command line: --token xoxp-your-token-here');
+    console.error('  2. Environment variable: export SLACK_TOKEN=xoxp-your-token-here');
+    console.error('  3. .env file: SLACK_TOKEN=xoxp-your-token-here');
     process.exit(1);
   }
   return new SlackProfileCLI(token);
@@ -197,15 +200,17 @@ program
   .name('slack-profile')
   .description('CLI tool for updating Slack user profiles')
   .version('1.0.0')
+  .option('-t, --token <token>', 'Slack API token (overrides SLACK_TOKEN env var)')
   .addHelpText('after', `
 Examples:
   $ slack-profile interactive          Start interactive mode
+  $ slack-profile --token xoxp-xxx interactive
   $ slack-profile help                 Show detailed help
   $ slack-profile list-fields          List all available fields
   $ slack-profile examples             Show usage examples
 
 Environment:
-  SLACK_TOKEN    Your Slack API token (required)
+  SLACK_TOKEN    Your Slack API token (or use --token flag)
                  Get one at: https://api.slack.com/apps
 `);
 
@@ -224,7 +229,8 @@ Examples:
 Tip: Run 'slack-profile list-fields' to see available fields`)
   .action(async (options) => {
     try {
-      const client = getSlackClient();
+      const token = program.opts().token;
+      const client = getSlackClient(token);
       const result = await client.setSingleField(options.user, options.name, options.value);
       console.log(`✅ Successfully updated ${options.name} for user ${options.user}`);
     } catch (error) {
@@ -250,7 +256,8 @@ Examples:
   $ slack-profile set-profile -u U1234567890 -p '{"title":"CTO","fields":{"Xf0111111":{"value":"Hi","alt":""}}}'`)
   .action(async (options) => {
     try {
-      const client = getSlackClient();
+      const token = program.opts().token;
+      const client = getSlackClient(token);
       let profile;
 
       try {
@@ -279,7 +286,8 @@ Examples:
   $ slack-profile batch-field -u U123,U456 -n pronouns -v "they/them"`)
   .action(async (options) => {
     try {
-      const client = getSlackClient();
+      const token = program.opts().token;
+      const client = getSlackClient(token);
       const userIds = options.users.split(',').map(id => id.trim()).filter(id => id);
 
       if (userIds.length === 0) {
@@ -312,7 +320,8 @@ Examples:
   $ slack-profile batch-profile -u U123,U456 -p '{"title":"Engineer","phone":"555-0000"}'`)
   .action(async (options) => {
     try {
-      const client = getSlackClient();
+      const token = program.opts().token;
+      const client = getSlackClient(token);
       const userIds = options.users.split(',').map(id => id.trim()).filter(id => id);
 
       if (userIds.length === 0) {
@@ -347,7 +356,8 @@ program
   .description('List available custom profile fields for the team')
   .action(async () => {
     try {
-      const client = getSlackClient();
+      const token = program.opts().token;
+      const client = getSlackClient(token);
       const fields = await client.getTeamProfile();
 
       console.log('Available profile fields:');
@@ -374,8 +384,8 @@ program
     }
   });
 
-async function runInteractive() {
-  const client = getSlackClient();
+async function runInteractive(token = null) {
+  const client = getSlackClient(token);
 
   // Fetch custom fields on startup
   let customFields = {};
@@ -648,7 +658,8 @@ program
   .description('Interactive mode - prompts for all inputs')
   .action(async () => {
     try {
-      await runInteractive();
+      const token = program.opts().token;
+      await runInteractive(token);
     } catch (error) {
       // Handle Ctrl+C gracefully
       if (error.message?.includes('User force closed') || error.message?.includes('prompt was canceled')) {
@@ -774,7 +785,6 @@ program
 // Default action when no command is provided
 if (process.argv.length === 2) {
   // No arguments provided, start interactive mode
-  const client = getSlackClient();
   console.log('🚀 Starting interactive mode...\n');
   program.parse(['node', 'index.js', 'interactive']);
 } else {
