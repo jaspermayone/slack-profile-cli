@@ -21,7 +21,7 @@ gem install slack_profile
 ### Via Homebrew (builds from Ruby source)
 
 ```bash
-brew install slack-profile
+brew install jaspermayone/tap/slack-profile
 ```
 
 ### From Source

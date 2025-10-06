@@ -68,12 +68,11 @@ git push && git push --tags
    git add .
    git commit -m "Add slack-profile formula"
    git push
-   ```
+   ```i
 
 3. **Users can now install with:**
    ```bash
-   brew tap jaspermayone/slack-profile
-   brew install slack-profile
+   brew install jaspermayone/tap/slack-profile
    ```
 
 ### Updating the Formula (After Each Release)
