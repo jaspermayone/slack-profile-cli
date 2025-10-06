@@ -377,6 +377,16 @@ program
 async function runInteractive() {
   const client = getSlackClient();
 
+  // Fetch custom fields on startup
+  let customFields = {};
+  try {
+    console.log('🔄 Fetching available fields...\n');
+    const fields = await client.getTeamProfile();
+    customFields = fields || {};
+  } catch (error) {
+    console.log('⚠️  Could not fetch custom fields, but you can still enter field IDs manually\n');
+  }
+
   while (true) {
     console.log('🚀 Slack Profile CLI - Interactive Mode\n');
 
@@ -462,7 +472,6 @@ async function runInteractive() {
     }
 
     if (action === 'list') {
-      const fields = await client.getTeamProfile();
       console.log('\n📋 Available profile fields:');
       console.log('\nStandard fields:');
       const standardFields = [
@@ -473,9 +482,9 @@ async function runInteractive() {
         console.log(`  • ${field}`);
       });
 
-      if (fields && Object.keys(fields).length > 0) {
+      if (customFields && Object.keys(customFields).length > 0) {
         console.log('\nCustom fields:');
-        Object.entries(fields).forEach(([id, field]) => {
+        Object.entries(customFields).forEach(([id, field]) => {
           console.log(`  • ${id} - ${field.label} (${field.type})`);
         });
       } else {
@@ -520,15 +529,6 @@ async function runInteractive() {
     }
 
     if (action === 'single' || action === 'batch_single') {
-      // Get custom fields for autocomplete
-      let customFields = {};
-      try {
-        const fields = await client.getTeamProfile();
-        customFields = fields || {};
-      } catch (error) {
-        console.log('⚠️  Could not fetch custom fields, but you can still enter field IDs manually');
-      }
-
       const standardFields = [
         'first_name', 'last_name', 'display_name', 'title',
         'email', 'phone', 'pronouns', 'real_name', 'start_date'
