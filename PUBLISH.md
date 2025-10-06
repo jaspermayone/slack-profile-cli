@@ -55,7 +55,7 @@ git push && git push --tags
 2. **Initialize the tap with your formula:**
    ```bash
    # Clone your new tap repository
-   git clone https://github.com/jaspermayone/homebrew-slack-profile.git
+   git clone https://github.com/jaspermayone/homebrew-tap.git
    cd homebrew-slack-profile
 
    # Create Formula directory
