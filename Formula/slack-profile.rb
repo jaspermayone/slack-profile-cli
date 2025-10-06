@@ -1,7 +1,7 @@
 class SlackProfile < Formula
   desc "CLI tool for updating Slack user profiles (Ruby version)"
   homepage "https://github.com/jaspermayone/slack-profile-cli"
-  url "https://github.com/jaspermayone/slack-profile-cli/archive/refs/tags/v1.0.0.tar.gz"
+  url "https://github.com/jaspermayone/slack-profile-cli/archive/refs/tags/v2.0.0.tar.gz"
   sha256 "" # Will be generated when you create a GitHub release
   license "MIT"
   head "https://github.com/jaspermayone/slack-profile-cli.git", branch: "main"
